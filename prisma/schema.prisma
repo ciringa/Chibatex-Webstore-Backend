@@ -1,0 +1,67 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
+// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+enum Role {
+  ADMIN // adiministrador (pode adicionar ou remover managers)
+  MANAGER // managers podem adicionar, alterar ou remover produtos
+  CLIENT // clientes podem comprar produtos 
+}
+
+//usuário padrão da aplicação 
+model User{
+  Id String @default(uuid()) @id
+  Name String? 
+  Email String @unique
+  Password String
+  Role Role @default(CLIENT)
+
+
+  shopCart ShoppingCart?
+}
+
+// Entidade que se relaciona com o usuário carregando os seus pedidos 
+model ShoppingCart{
+  Id String @id @default(uuid())
+  newId User @relation(fields: [UserId],references: [Id]) // relacionamento one to one com o usuário
+  UserId String @unique
+
+  // relacionamento com pedidos
+  orders Order[]
+}
+
+// um pedido é uma seleção de um produto em especifico
+// o produto pode ser comprado e entregue, ele é comprado no carrinho  
+model Order{
+  Id String @id @default(uuid())  
+  CreatedAt DateTime @default(now())
+  PuchasedAt DateTime? 
+  DeliveredAt DateTime?
+
+  // relacionamento com um carrinho
+  ShoppingCart ShoppingCart? @relation(fields: [CartId],references: [Id])
+  CartId String? 
+  // relacionamento com um produto
+  RefProd Product[]
+}
+
+// produto em estoque
+model Product{
+  Id Int @default(autoincrement())
+  Title String @unique
+  Company String
+
+  orderRef Order? @relation(fields: [orderId],references: [Id])
+  orderId String? 
+}

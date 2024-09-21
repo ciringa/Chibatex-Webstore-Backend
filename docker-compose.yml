@@ -1,0 +1,17 @@
+services:
+  db:
+    image: bitnami/postgresql
+    ports: 
+      - 5432:5432
+    environment:
+      POSTGRES_USER: chibatex
+      POSTGRES_PASSWORD: chibatexAdmin
+      POSTGRES_DB: chibatexDatabase
+    volumes:
+      - db:/var/lib/postgresql/data
+
+
+
+volumes:
+  db:
+    driver: local
