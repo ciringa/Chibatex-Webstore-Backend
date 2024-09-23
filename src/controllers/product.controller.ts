@@ -1,5 +1,6 @@
-import { Body, Controller, Param, Post, Put, Req } from '@nestjs/common';
+import { Body, Controller, Delete, Get, Param, Post, Put, Req } from '@nestjs/common';
 import { Product } from '@prisma/client';
+import { error } from 'console';
 import { DefaultProductResponse } from 'src/dtos/responses';
 import { EntityDoesNotExists } from 'src/errors/entityDoesNotExists.error';
 import { ResourceIsAlreadyUse } from 'src/errors/ResourceIsAlreadyInuse.error';
@@ -85,6 +86,137 @@ export class ProductController {
                     StatusCode:403
                 }
             }
+        }
+    }
+
+    @Delete("/delete/:pId")
+    async DeleteProduct(@Param("Pid") Pid:string):Promise<DefaultProductResponse>{
+        try{
+            const tr = await this.Service.deleteProduct(Number(Pid))
+            if(tr){
+                return {
+                    Description:"Succesfully deleted the user",
+                    response:tr,
+                    StatusCode:200
+                }
+            }else{
+                return{
+                    Description:"cant delete the user",
+                    response:null,
+                    StatusCode:400
+                }
+            }
+        }catch(err){
+            if(err instanceof EntityDoesNotExists){
+                return{
+                    Description:`${err.message}`,
+                    response:null,
+                    StatusCode:404
+                }
+            }
+        }
+    }
+
+    @Get("/findByid/:PId")
+    async FindProductByid(@Param("PId") Pid:string):Promise<DefaultProductResponse>{
+        try{
+            const ts = await this.Service.GetById(Number(Pid))
+            if(ts){
+                return {
+                    Description:"Succesfully returned the user",
+                    response:ts,
+                    StatusCode:200
+                }
+            }else{
+                return{
+                    Description:"cant returned the user",
+                    response:null,
+                    StatusCode:400
+                }
+            }
+        }catch(err){
+            return{
+                Description:err.message,
+                response:null,
+                StatusCode:400
+            } 
+        }
+    }
+    @Get("/finbytitle/:Title")
+    async FindByTitle(@Param("Title") Title:string):Promise<DefaultProductResponse>{
+        try{
+            const ts = await this.Service.GetByTitle(Title)
+            if(ts){
+                return {
+                    Description:"Succesfully returned the user",
+                    response:ts,
+                    StatusCode:200
+                }
+            }else{
+                return{
+                    Description:"cant returned the user",
+                    response:null,
+                    StatusCode:400
+                }
+            }
+        }catch(err){
+            return{
+                Description:err.message,
+                response:null,
+                StatusCode:400
+            } 
+        }
+    }
+
+    
+    @Get("/findByCompany/:Company")
+    async FindByCompany(@Param("Company") Company:string):Promise<{Description:string,StatusCode:number,response:Product[]|null}>{
+        try{
+            const ts = await this.Service.getProductByCompany(Company)
+            if(ts){
+                return {
+                    Description:"Succesfully returned the user",
+                    response:ts,
+                    StatusCode:200
+                }
+            }else{
+                return{
+                    Description:"cant returned the user",
+                    response:null,
+                    StatusCode:400
+                }
+            }
+        }catch(err){
+            return{
+                Description:err.message,
+                response:null,
+                StatusCode:400
+            } 
+        }
+    }
+    @Get("/search/:Query/:Page")
+    async SearchProductByQuery(@Param("Query") Query:string,@Param("Page") Page:string):Promise<{Description:string,StatusCode:number,response:Product[]|null}>{
+        try{
+            const ts = await this.Service.getProductQuerySearch(Query,Number(Page))
+            if(ts){
+                return {
+                    Description:"Succesfully returned the user",
+                    response:ts,
+                    StatusCode:200
+                }
+            }else{
+                return{
+                    Description:"cant returned the user",
+                    response:null,
+                    StatusCode:400
+                }
+            }
+        }catch(err){
+            return{
+                Description:err.message,
+                response:null,
+                StatusCode:400
+            } 
         }
     }
 }
