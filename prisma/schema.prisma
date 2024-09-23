@@ -58,7 +58,7 @@ model Order{
 
 // produto em estoque
 model Product{
-  Id Int @default(autoincrement())
+  Id Int @id @default(autoincrement())
   Title String @unique
   Company String
 
