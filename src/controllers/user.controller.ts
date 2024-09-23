@@ -1,15 +1,12 @@
 import { Controller, Delete, Get, Param, Post, Put, Req, Res, Response } from '@nestjs/common';
 import { User } from '@prisma/client';
+import { DefaultUserResponse } from 'src/dtos/responses';
 import { EntityDoesNotExists } from 'src/errors/entityDoesNotExists.error';
 import { ResourceIsAlreadyUse } from 'src/errors/ResourceIsAlreadyInuse.error';
 import { UserService } from 'src/services/user.service';
 import { string, z } from 'zod';
 
-interface DefaultUserResponse{
-    StatusCode:number,
-    Description:string,
-    response:User | undefined
-}
+
 
 @Controller('user')
 export class UserController {
