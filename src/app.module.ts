@@ -7,11 +7,12 @@ import { ProductService } from './services/product.service';
 import { ProductController } from './controllers/product.controller';
 import { OrderService } from './services/order.service';
 import { ShoppingCartService } from './services/shopping-cart.service';
+import { ShoppinCartController } from './controllers/shopping-cart.controller';
 
 
 @Module({
   imports: [],
-  controllers: [UserController, ProductController],
+  controllers: [UserController, ProductController, ShoppinCartController],
   providers: [PrismaService, UserService,inMemoryUserRepositorie,ProductService, OrderService, ShoppingCartService],
 
 })

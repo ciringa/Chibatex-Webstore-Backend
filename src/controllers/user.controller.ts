@@ -3,6 +3,7 @@ import { User } from '@prisma/client';
 import { DefaultUserResponse } from 'src/dtos/responses';
 import { EntityDoesNotExists } from 'src/errors/entityDoesNotExists.error';
 import { ResourceIsAlreadyUse } from 'src/errors/ResourceIsAlreadyInuse.error';
+import { ShoppingCartService } from 'src/services/shopping-cart.service';
 import { UserService } from 'src/services/user.service';
 import { string, z } from 'zod';
 
@@ -10,7 +11,7 @@ import { string, z } from 'zod';
 
 @Controller('user')
 export class UserController {
-    constructor(private UserServices:UserService){}
+    constructor(private UserServices:UserService, private CartServices:ShoppingCartService){}
     
     @Post("/create")
     async create(@Req() req:Request):Promise<DefaultUserResponse>{
@@ -25,12 +26,18 @@ export class UserController {
             const response = await this.UserServices.create({
                 Email,Password,Name,Role
             })
-
-            return {
-                StatusCode:201,
-                Description:"Successfilly created a user",
-                response:response.createdUser
+            if(response){
+                //cria um carrinho de compras para cada usuário no momento em que este faz login
+                const cart = await this.CartServices.create({
+                    UserId:response.createdUser.Id
+                })
+                return {
+                    StatusCode:201,
+                    Description:"Successfilly created a user",
+                    response:response.createdUser
+                }
             }
+
         }catch(err){
             if( err instanceof ResourceIsAlreadyUse){
                 return {

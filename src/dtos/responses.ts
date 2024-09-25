@@ -1,4 +1,4 @@
-import { Product, User } from "@prisma/client";
+import { Product, ShoppingCart, User } from "@prisma/client";
 
 export interface DefaultUserResponse{
     StatusCode:number,
@@ -11,4 +11,10 @@ export interface DefaultProductResponse{
     StatusCode:number,
     Description:string,
     response:Product | undefined
+}
+
+export interface DefaultCartResponse{
+    StatusCode:number,
+    Description:string,
+    response:ShoppingCart | undefined
 }
