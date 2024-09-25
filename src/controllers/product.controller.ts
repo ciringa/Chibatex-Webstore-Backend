@@ -56,7 +56,8 @@ export class ProductController {
         }).parse(req.body)
         try{
             const result = await this.Service.updateProduct(Number(Pid),{
-                Company,Title
+                Company,
+                Title
             })
             if(result){
                 return {

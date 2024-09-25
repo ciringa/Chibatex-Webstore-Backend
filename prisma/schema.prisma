@@ -53,7 +53,8 @@ model Order{
   ShoppingCart ShoppingCart? @relation(fields: [CartId],references: [Id])
   CartId String? 
   // relacionamento com um produto
-  RefProd Product[]
+  prodRef Product @relation(fields: [prodId],references: [Id])
+  prodId Int
 }
 
 // produto em estoque
@@ -62,6 +63,5 @@ model Product{
   Title String @unique
   Company String
 
-  orderRef Order? @relation(fields: [orderId],references: [Id])
-  orderId String? 
+  orderRef Order[]
 }
